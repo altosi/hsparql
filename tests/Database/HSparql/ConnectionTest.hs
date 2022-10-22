@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Database.HSparql.ConnectionTest ( testSuite ) where
 
@@ -8,10 +9,10 @@ import Test.HUnit
 
 import qualified Data.Map as Map
 import qualified Data.RDF as RDF
-import Data.Text
 
 import Database.HSparql.Connection
 import Database.HSparql.QueryGenerator
+import Data.Text
 
 testSuite :: [Test.Framework.Test]
 testSuite = [
@@ -21,6 +22,7 @@ testSuite = [
       , testCase "askQuery" test_askQuery
       , testCase "constructQuery" test_constructQuery
       , testCase "describeQuery" test_describeQuery
+      , testCase "updateQuery" test_updateQuery
     ]
   ]
 
@@ -125,3 +127,15 @@ test_describeQuery =
               resource <- prefix "dbpedia" (iriRef "http://dbpedia.org/resource/")
               uri <- describeIRI (resource .:. "Edinburgh")
               return DescribeQuery { queryDescribe = uri }
+
+test_updateQuery :: IO ()
+test_updateQuery =
+  do
+    success <- updateQuery endpoint query
+    assertEqual "success" True success
+  where endpoint = "http://127.0.0.1:3000"
+        query = do
+            rdfs <- prefix "rdfs" (iriRef "http://www.w3.org/2000/01/rdf-schema#")
+            wd <- prefix "wd" (iriRef "http://www.wikidata.org/entity/")
+            updateTriple_ (wd .:. "Q1568346") (rdfs .:. "label") (pack "test case")
+            update

@@ -1,6 +1,9 @@
-resolver: lts-15.16
+resolver: lts-18.8
 packages:
 - '.'
+- ../rdf4h
 extra-deps:
-- git: https://github.com/robstewart57/rdf4h.git
-  commit: 018755800c6503ddebe27efb7261be1c95ee2f12
+  - MissingH-1.5.0.1@sha256:f662d35e54eee556bf6f1a8ec4319728985432689e844e611b02e958137b51a2,4651
+
+#- git: https://github.com/altosi/rdf4h.git
+#  commit: 018755800c6503ddebe27efb7261be1c95ee2f12

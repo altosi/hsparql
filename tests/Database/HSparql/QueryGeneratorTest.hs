@@ -1,5 +1,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE PostfixOperators  #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings  #-}
 
 module Database.HSparql.QueryGeneratorTest ( testSuite ) where
 
@@ -33,10 +35,10 @@ instance CreateQuery (Query DescribeQuery) where
 
 normalizeWhitespace :: Text -> Text
 normalizeWhitespace = T.strip
-                      . (T.replace "  " " ")
-                      . (T.replace "  " " ")
-                      . (T.replace "  " " ")
-                      . (T.replace "\n" " ")
+                      . T.replace "  " " "
+                      . T.replace "  " " "
+                      . T.replace "  " " "
+                      . T.replace "\n" " "
 
 queryTexts :: [(Text, Text)]
 queryTexts =
@@ -578,6 +580,28 @@ SELECT ?x0 ?x1 WHERE {
 
         selectVars [s, o]
     )
+
+  , ( [s|
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+INSERT DATA {
+  dbo:Company rdfs:subClassOf dbo:Organisation .
+  dbo:Company rdf:type owl:Class .
+}
+|]
+      , createQuery $ do
+          rdf  <- prefix "rdf" (iriRef "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+          dbo  <- prefix "dbo" (iriRef "http://dbpedia.org/ontology/")
+          owl  <- prefix "owl" (iriRef "http://www.w3.org/2002/07/owl#")
+          rdfs  <- prefix "rdfs" (iriRef "http://www.w3.org/2000/01/rdf-schema#")
+
+          updateTriple_ (dbo .:. "Company") (rdf .:. "type") (owl .:. "Class")
+          updateTriple_ (dbo .:. "Company") (rdfs .:. "subClassOf") (dbo .:. "Organisation")
+          update
+      )
   ]
 
 testSuite :: [Test.Framework.Test]

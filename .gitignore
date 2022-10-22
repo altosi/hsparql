@@ -8,3 +8,6 @@ TAGS
 sources.txt
 .stack-work
 stack.yaml.lock
+.idea
+*.iml
+out

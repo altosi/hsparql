@@ -47,6 +47,7 @@ module Database.HSparql.QueryGenerator
     subQuery_,
     select,
     selectVars,
+    update,
     as,
 
     -- ** Property paths
@@ -327,6 +328,11 @@ selectVars vs = return SelectQuery {queryExpr = fmap SelectVar vs}
 
 select :: [SelectExpr] -> Query SelectQuery
 select es = return SelectQuery {queryExpr = es}
+
+update :: Query UpdateQuery
+update = do
+  ts <- gets updateTriples
+  return UpdateQuery {queryUpdate = ts}
 
 -- | Add optional constraints on matches. Variable bindings within the optional
 --   action are lost, so variables must always be defined prior to opening the
