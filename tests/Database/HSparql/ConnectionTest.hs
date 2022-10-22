@@ -138,4 +138,4 @@ test_updateQuery =
             rdfs <- prefix "rdfs" (iriRef "http://www.w3.org/2000/01/rdf-schema#")
             wd <- prefix "wd" (iriRef "http://www.wikidata.org/entity/")
             updateTriple_ (wd .:. "Q1568346") (rdfs .:. "label") (pack "test case")
-            update
+            insertData

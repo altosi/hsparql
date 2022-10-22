@@ -47,7 +47,7 @@ module Database.HSparql.QueryGenerator
     subQuery_,
     select,
     selectVars,
-    update,
+    insertData,
     as,
 
     -- ** Property paths
@@ -329,8 +329,8 @@ selectVars vs = return SelectQuery {queryExpr = fmap SelectVar vs}
 select :: [SelectExpr] -> Query SelectQuery
 select es = return SelectQuery {queryExpr = es}
 
-update :: Query UpdateQuery
-update = do
+insertData :: Query UpdateQuery
+insertData = do
   ts <- gets updateTriples
   return UpdateQuery {queryUpdate = ts}
 

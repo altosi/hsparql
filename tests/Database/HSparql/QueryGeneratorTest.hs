@@ -600,7 +600,7 @@ INSERT DATA {
 
           updateTriple_ (dbo .:. "Company") (rdf .:. "type") (owl .:. "Class")
           updateTriple_ (dbo .:. "Company") (rdfs .:. "subClassOf") (dbo .:. "Organisation")
-          update
+          insertData
       )
   ]
 

@@ -136,6 +136,37 @@ simpleAsk = do
     return AskQuery { queryAsk = [ask] }
 ```
 
+### Update Queries
+
+The following SPARQL query:
+
+```sparql
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+INSERT DATA {
+  dbo:Company rdfs:subClassOf dbo:Organisation .
+  dbo:Company rdf:type owl:Class .
+}
+```
+
+Can be generated using the following Haskell code:
+
+```haskell
+updateQuery :: Query UpdateQuery
+updateQuery = do
+    rdf  <- prefix "rdf" (iriRef "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+    dbo  <- prefix "dbo" (iriRef "http://dbpedia.org/ontology/")
+    owl  <- prefix "owl" (iriRef "http://www.w3.org/2002/07/owl#")
+    rdfs  <- prefix "rdfs" (iriRef "http://www.w3.org/2000/01/rdf-schema#")
+
+    updateTriple_ (dbo .:. "Company") (rdf .:. "type") (owl .:. "Class")
+    updateTriple_ (dbo .:. "Company") (rdfs .:. "subClassOf") (dbo .:. "Organisation")
+    insertData
+```
+
 ## Output Types
 
 ### Select Queries
